@@ -32,7 +32,13 @@ const postCat = async (req, res) => {
 }
 
 const putCat = async (req, res) => {
-  const updatedCat = await updateCat(req.body, Number.parseInt(req.params.id));
+  const catId = Number.parseInt(req.params.id);
+  const catToUpdate = await findCatById(catId);
+
+  if (!catToUpdate) return res.sendStatus(404);
+  if (res.locals.user.user_id !== Number.parseInt(req.body.owner)) return res.sendStatus(403);
+
+  const updatedCat = await updateCat(req.body, catId);
 
   if (!updatedCat.cat_id) res.sendStatus(404);
 
@@ -40,7 +46,13 @@ const putCat = async (req, res) => {
 }
 
 const deleteCat = async (req, res) => {
-  const deletedCat = await removeCat(Number.parseInt(req.params.id));
+  const catId = Number.parseInt(req.params.id);
+  const catToDelete = await findCatById(catId);
+
+  if (!catToDelete) return res.sendStatus(404);
+  if (res.locals.user.user_id !== catToDelete.owner) return res.sendStatus(403);
+
+  const deletedCat = await removeCat(catId);
 
   if (!deletedCat.cat_id) res.sendStatus(404);
 

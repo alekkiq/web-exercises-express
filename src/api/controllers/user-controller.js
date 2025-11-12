@@ -32,7 +32,13 @@ const postUser = async (req, res) => {
 }
 
 const putUser = async (req, res) => {
-  const updatedUser = await updateUser(req.body, Number.parseInt(req.params.id));
+  const userId = Number.parseInt(req.params.id);
+  const userToUpdate = await findUserById(userId);
+
+  if (!userToUpdate) return res.sendStatus(404);
+  if (res.locals.user.role !== 'admin' || res.locals.user.user_id !== userId) return res.sendStatus(403);
+
+  const updatedUser = await updateUser(req.body, userId);
 
   if (!updatedUser.user_id) res.sendStatus(404);
 
@@ -40,7 +46,13 @@ const putUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-  const deletedUser = await removeUser(Number.parseInt(req.params.id));
+  const userId = Number.parseInt(req.params.id);
+  const userToDelete = await findUserById(userId);
+
+  if (!userToDelete) return res.sendStatus(404);
+  if (res.locals.user.role !== 'admin' || res.locals.user.user_id !== userId) return res.sendStatus(403);
+
+  const deletedUser = await removeUser(userId);
 
   if (!deletedUser.user_id) res.sendStatus(404);
 
