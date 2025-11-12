@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { getAllUsers, findUserById, findUserByUsername, addUser, updateUser, removeUser } from '../models/user-model.js';
 
 const getUsers = async (req, res) => {
@@ -21,6 +22,8 @@ const getUserByUsername = async (req, res) => {
 }
 
 const postUser = async (req, res) => {
+  req.body.password = bcrypt.hashSync(req.body.password, 10);
+
   const newUser = await addUser(req.body);
 
   if (!newUser.user_id) res.sendStatus(400);
