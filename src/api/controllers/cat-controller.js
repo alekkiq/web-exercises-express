@@ -24,7 +24,7 @@ const postCat = async (req, res) => {
 }
 
 const putCat = async (req, res) => {
-  const updatedCat = await updateCat(req.body, req.params.id);
+  const updatedCat = await updateCat(req.body, Number.parseInt(req.params.id));
 
   if (!updatedCat.cat_id) res.sendStatus(404);
 
