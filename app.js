@@ -14,7 +14,7 @@ const cats = [
     birthdate: "2024-01-10",
     weight: 5,
     owner: "Aleksi",
-    image: ""
+    image: "https://loremflickr.com/320/240/cat"
   },
   {
     cat_id: 2,
@@ -22,12 +22,25 @@ const cats = [
     birthdate: "2024-10-01",
     weight: 3,
     owner: "Mikko",
-    image: ""
+    image: "https://loremflickr.com/320/240/cat"
   },
 ]
 
-app.get('/api/v1/cat', (req, res) => {
-  res.send("moi");
+app.get('/', (req, res) => {
+  res.send('Welcome to my REST API!');
+});
+
+app.get('/api/v1/cats', (req, res) => {
+  res.json(cats);
+});
+
+app.get('/api/v1/cat/:id', (req, res) => {
+  const id = Number.parseInt(req.params.id);
+  const cat = cats.find((cat) => cat.cat_id === id);
+
+  if (!cat) res.sendStatus(404);
+
+  res.json(cat);
 });
 
 app.listen(PORT, HOST, () => {
