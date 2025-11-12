@@ -1,4 +1,7 @@
 import express from 'express';
+import multer from 'multer';
+
+const upload = multer({ dest: 'uploads/' });
 
 import {
   getCats,
@@ -10,7 +13,7 @@ import {
 
 const catRouter = express.Router();
 
-catRouter.route('/').get(getCats).post(postCat);
+catRouter.route('/').get(getCats).post(upload.single('catImage'), postCat);
 
 catRouter.route('/:id').get(getCat).put(putCat).delete(deleteCat);
 

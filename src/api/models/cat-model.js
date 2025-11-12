@@ -25,9 +25,10 @@ const findCatById = (id) => {
   return cats.find((cat) => cat.cat_id === id);
 }
 
-const addCat = (cat) => {
-  const { cat_name, weight, owner, filename, birthdate } = cat;
+const addCat = (cat, file) => {
+  const { cat_name, weight, owner, birthdate } = cat;
   const newId = cats[cats.length - 1].cat_id + 1;
+  const filename = file ? file.filename : null;
   cats.push({cat_id: newId, cat_name, weight, owner, filename, birthdate});
 
   return { cat_id: newId };

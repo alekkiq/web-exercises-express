@@ -13,7 +13,10 @@ const getCat = (req, res) => {
 }
 
 const postCat = (req, res) => {
-  const newCat = addCat(req.body);
+  console.log(`Request body: ${JSON.stringify(req.body)}`);
+  console.log(`Request file: ${JSON.stringify(req.file)}`);
+
+  const newCat = addCat(req.body, req.file);
 
   if (!newCat.cat_id) res.sendStatus(400);
 
