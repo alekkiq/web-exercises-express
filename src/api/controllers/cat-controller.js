@@ -1,4 +1,4 @@
-import { getAllCats, findCatById, addCat, updateCat, removeCat } from '../models/cat-model.js';
+import { getAllCats, findCatById, findCatsByOwnerId, addCat, updateCat, removeCat } from '../models/cat-model.js';
 
 const getCats = async (req, res) => {
   res.json(await getAllCats());
@@ -10,6 +10,14 @@ const getCat = async (req, res) => {
   if (!cat) res.sendStatus(404);
 
   res.json(cat);
+}
+
+const getCatsByOwnerId = async (req, res) => {
+  const cats = await findCatsByOwnerId(Number.parseInt(req.params.ownerId));
+
+  if (!cats) res.sendStatus(404);
+
+  res.json(cats);
 }
 
 const postCat = async (req, res) => {
@@ -39,4 +47,4 @@ const deleteCat = async (req, res) => {
   res.status(200).json({message: 'Cat item deleted.'});
 }
 
-export { getCats, getCat, postCat, putCat, deleteCat };
+export { getCats, getCat, getCatsByOwnerId, postCat, putCat, deleteCat };
