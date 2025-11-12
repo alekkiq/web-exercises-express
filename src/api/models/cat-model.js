@@ -17,41 +17,47 @@ const cats = [
   },
 ]
 
-const getAllCats = () => {
-  return cats;
+import promisePool from '../../utils/database.js';
+
+const getAllCats = async () => {
+  const [rows] = await promisePool.query('SELECT * FROM wsk_cats');
+  return rows;
 }
 
-const findCatById = (id) => {
-  return cats.find((cat) => cat.cat_id === id);
+const findCatById = async (id) => {
+  const [rows] = await promisePool.query('SELECT * FROM wsk_cats WHERE cat_id = ?', [id]);
+
+  if (rows.length === 0) return false;
+
+  return rows[0];
 }
 
-const addCat = (cat, file) => {
+const addCat = async (cat, file) => {
   const { cat_name, weight, owner, birthdate } = cat;
-  const newId = cats[cats.length - 1].cat_id + 1;
   const filename = file ? file.filename : null;
-  cats.push({cat_id: newId, cat_name, weight, owner, filename, birthdate});
 
-  return { cat_id: newId };
+  const sql = 'INSERT INTO wsk_cats (cat_name, weight, owner, filename, birthdate) VALUES (?, ?, ?, ?, ?)';
+  const values = [cat_name, weight, owner, filename, birthdate];
+  const rows = await promisePool.execute(sql, values);
+
+  if (rows[0].affectedRows === 0) return false;
+
+  return { cat_id: rows[0].insertId };
 }
 
-const updateCat = (cat) => {
-  const { cat_id, cat_name, weight, owner, filename, birthdate } = cat;
-  const catToUpdate = cats.find((cat) => cat.cat_id === cat_id);
+const updateCat = async (cat, id) => {
+  const sql = promisePool.format('UPDATE wsk_cats SET ? WHERE cat_id = ?', [cat, id])
+  const rows = await promisePool.execute(sql);
 
-  if (!catToUpdate) return null;
+  if (rows[0].affectedRows === 0) return false;
 
-  Object.assign(catToUpdate, { cat_name, weight, owner, filename, birthdate });
-
-  return { cat_id: cat_id };
+  return { cat_id: id };
 }
 
-const removeCat = (id) => {
-  const catToDelete = cats.find((cat) => cat.cat_id === id);
+const removeCat = async (id) => {
+  const [rows] = await promisePool.execute('DELETE FROM wsk_cats WHERE cat_id = ?', [id]);
 
-  if (!catToDelete) return null;
-
-  const index = cats.indexOf(catToDelete);
-  cats.splice(index, 1);
+  if (rows.affectedRows === 0) return false;
 
   return { cat_id: id };
 }
