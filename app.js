@@ -5,7 +5,7 @@ const PORT = 3000;
 
 const app = express();
 
-app.use(express.static());
+app.use('/public', express.static('public'));
 
 const cats = [
   {
