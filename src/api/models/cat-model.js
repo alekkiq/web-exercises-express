@@ -27,7 +27,7 @@ const findCatById = (id) => {
 
 const addCat = (cat) => {
   const { cat_name, weight, owner, filename, birthdate } = cat;
-  const newId = cats[0].cat_id + 1;
+  const newId = cats[cats.length - 1].cat_id + 1;
   cats.push({cat_id: newId, cat_name, weight, owner, filename, birthdate});
 
   return { cat_id: newId };
